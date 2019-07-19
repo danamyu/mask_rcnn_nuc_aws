@@ -290,14 +290,14 @@ def train(model, dataset_dir, subset):
     print("Train network heads")
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=12, #20
+                epochs=20, #20
                 augmentation=augmentation,
                 layers='heads')
 
     print("Train all layers")
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=12, #40
+                epochs=20, #40
                 augmentation=augmentation,
                 layers='all')
 
@@ -396,7 +396,7 @@ def detect(model, dataset_dir, subset):
         visualize.display_instances(
             image, r['rois'], r['masks'], r['class_ids'],
             dataset.class_names, r['scores'],
-            show_bbox=False, show_mask=False,
+            show_bbox=False, show_mask=True,
             title="Predictions")
         plt.savefig("{}/{}.png".format(submit_dir, dataset.image_info[image_id]["id"]))
 
@@ -413,7 +413,7 @@ def detect(model, dataset_dir, subset):
 ############################################################
 
 if __name__ == '__main__':
-    import argparse
+    import argparse, glob
 
 
     # Parse command line arguments
@@ -475,14 +475,43 @@ if __name__ == '__main__':
     #TODO: check if checkpoint exists
     print(len(os.listdir(DEFAULT_LOGS_DIR)))
     print('root dir', ROOT_DIR)
-    if len(os.listdir(DEFAULT_LOGS_DIR)) == 0:
-        weights_path = COCO_WEIGHTS_PATH
-        # Download weights file
-        if not os.path.exists(weights_path):
-            utils.download_trained_weights(weights_path)
-        model.load_weights(weights_path, by_name=True, exclude=[
-            "mrcnn_class_logits", "mrcnn_bbox_fc",
-            "mrcnn_bbox", "mrcnn_mask"])
+    # if len(os.listdir(DEFAULT_LOGS_DIR)) == 0:
+    #     weights_path = COCO_WEIGHTS_PATH
+    #     # Download weights file
+    #     if not os.path.exists(weights_path):
+    #         utils.download_trained_weights(weights_path)
+    #     model.load_weights(weights_path, by_name=True, exclude=[
+    #         "mrcnn_class_logits", "mrcnn_bbox_fc",
+    #         "mrcnn_bbox", "mrcnn_mask"])
+    if len(os.listdir(DEFAULT_LOGS_DIR)) > 0:
+        # check last subdir contains for a .h5 file
+        #get last subdir
+        subdirs=os.listdir(DEFAULT_LOGS_DIR)
+        last_subdir=sorted((os.listdir(DEFAULT_LOGS_DIR)))[-1]
+        print('last_subdir', last_subdir)
+        #check if last subdir contains .h5
+        dir_path=os.path.join(DEFAULT_LOGS_DIR,last_subdir)
+        print('dir_path', dir_path)
+        dir_ext= dir_path+"/*.h5"
+        print('dir-ext', dir_ext)
+        print(glob.glob(dir_ext))
+        # if no .h5 file exists... download coco weights
+        if not glob.glob(dir_ext):
+            weights_path = COCO_WEIGHTS_PATH
+            print('WEIGHTS',weights_path)
+            # Download weights file
+            if not os.path.exists(weights_path):
+                utils.download_trained_weights(weights_path)
+            model.load_weights(weights_path, by_name=True, exclude=[
+                "mrcnn_class_logits", "mrcnn_bbox_fc",
+                "mrcnn_bbox", "mrcnn_mask"])
+        else:
+            # weights_path == model.find_last()
+            print('Loading last weights:')
+            model.load_weights(model.find_last(), by_name=True)
+        #os.listdir(path) lists contents of directory including files
+        # if .h5 does not exist... download coco weights
+
     else:
         #weights_path == model.find_last()
         print('Loading last weights:')

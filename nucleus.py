@@ -427,7 +427,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', required=False,
                         metavar="/path/to/dataset/",
                         help='Root directory of the dataset')
-    parser.add_argument('--weights', required=True,
+    parser.add_argument('--weights', required=False,
                        metavar="/path/to/weights.h5",
                        help="Path to weights .h5 file or 'coco'")
     # parser.add_argument('--logs', required=False,

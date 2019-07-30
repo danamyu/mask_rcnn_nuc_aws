@@ -280,7 +280,7 @@ def train(model, dataset_dir, subset):
         iaa.OneOf([iaa.Affine(rotate=90),
                    iaa.Affine(rotate=180),
                    iaa.Affine(rotate=270)]),
-        iaa.Multiply((0.8, 1.5)),
+        iaa.Multiply((0.5, .9)),
         iaa.GaussianBlur(sigma=(0.0, 5.0))
     ])
 

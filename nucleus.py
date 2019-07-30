@@ -476,15 +476,16 @@ if __name__ == '__main__':
     #TODO: check if checkpoint exists
     print(len(os.listdir(DEFAULT_LOGS_DIR)))
     print('root dir', ROOT_DIR)
-    # if len(os.listdir(DEFAULT_LOGS_DIR)) == 0:
-    #     weights_path = COCO_WEIGHTS_PATH
-    #     # Download weights file
-    #     if not os.path.exists(weights_path):
-    #         utils.download_trained_weights(weights_path)
-    #     model.load_weights(weights_path, by_name=True, exclude=[
-    #         "mrcnn_class_logits", "mrcnn_bbox_fc",
-    #         "mrcnn_bbox", "mrcnn_mask"])
-    if len(os.listdir(DEFAULT_LOGS_DIR)) > 0:
+    if len(os.listdir(DEFAULT_LOGS_DIR)) == 0:
+        weights_path = COCO_WEIGHTS_PATH
+        # Download weights file
+        if not os.path.exists(weights_path):
+            utils.download_trained_weights(weights_path)
+        model.load_weights(weights_path, by_name=True, exclude=[
+            "mrcnn_class_logits", "mrcnn_bbox_fc",
+            "mrcnn_bbox", "mrcnn_mask"])
+    # if a checkpoints directory exists, check to see if a .h5 file exists
+    elif len(os.listdir(DEFAULT_LOGS_DIR)) > 0:
         # check last subdir contains for a .h5 file
         #get last subdir
         subdirs=os.listdir(DEFAULT_LOGS_DIR)

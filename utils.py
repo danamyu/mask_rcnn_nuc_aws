@@ -36,8 +36,6 @@ def extract_bboxes(mask):
     Returns: bbox array [num_instances, (y1, x1, y2, x2)].
     """
     boxes = np.zeros([mask.shape[-1], 4], dtype=np.int32)
-    #print('mask shape',mask.shape)
-    #print(mask.shape[-1])
     for i in range(mask.shape[-1]):
         m = mask[:, :, i]
         # Bounding box.
@@ -64,7 +62,6 @@ def extract_bboxes_acc(mask):
     Returns: bbox array [num_instances, (y1, x1, y2, x2)].
     """
     boxes = np.zeros([mask.shape[-1], 4], dtype=np.int32)
-    #for i in range(mask.shape[-1]):
     m = mask[:, :]
     # Bounding box.
     horizontal_indicies = np.where(np.any(m, axis=0))[0]
@@ -95,26 +92,13 @@ def compute_iou(box, boxes, box_area, boxes_area):
     efficiency. Calculate once in the caller to avoid duplicate work.
     """
     # Calculate intersection areas
-    # print('box', box, 'shape:', box.shape)
-    # print('boxes', boxes, 'shape', boxes.shape)
-    # print('y1', box[0], 'boxes[:, 0]', boxes[:,0])
-    # print('y2', box[2], 'boxes[:, 2]', boxes[:,2])
-    # print('x1', box[1], 'boxes[:, 1]', boxes[:,1])
-    # print('x2', box[3], 'boxes[:, 3]', boxes[:,3])
     y1 = np.maximum(box[0], boxes[:,0])
     y2 = np.minimum(box[2], boxes[:,2])
     x1 = np.maximum(box[1], boxes[:,1])
     x2 = np.minimum(box[3], boxes[:,3])
-    # print('y1', y1)
-    # print('y2', y2)
-    # print('x1', x1)
-    # print('x2', x2)
     xmax = np.maximum(x2-x1,0)
     ymax = np.maximum(y2-y1,0)
-    # print('xmax',xmax)
-    # print('ymax',ymax)
     intersection = np.maximum(x2 - x1, 0) * np.maximum(y2 - y1, 0)
-    # print('intersection:', intersection)
     union = box_area + boxes_area[:] - intersection[:]
     iou = intersection / union
     return iou

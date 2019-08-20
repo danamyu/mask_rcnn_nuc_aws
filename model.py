@@ -49,20 +49,6 @@ def define_callbacks(log_dir, checkpoint_path):
                 print('spot instance termination notice received.')
                 time.sleep(150)
 
-            # #callbacks = []
-            # num = random.randint(1, 21)
-            # print('num', num)
-            #
-            # if (num % 2) == 0:
-            #     print(num, num % 2, "spot termination received")
-            #     print("sleeping")
-            #     #time.sleep(150)
-            #     print("resume")
-            #     # callbacks = []
-
-
-    #spot_termination_callback = SpotTermination()
-
     # # Callbacks
     callbacks = [
         SpotTermination(),
